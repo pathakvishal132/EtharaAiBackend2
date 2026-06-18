@@ -100,7 +100,7 @@ AUTH_USER_MODEL = 'user.User'
 
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://localhost:8000'
+    default='http://localhost:3000,http://localhost:8000,https://ethara-ai-frontend-kappa.vercel.app'
 ).split(',')
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['Set-Cookie']
