@@ -8,7 +8,10 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-7hq8%_72m@!ra$m5%a(t7
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='.vercel.app,.onrender.com,localhost'
+).split(',')
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -19,6 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    "whitenoise",
     "user",
     "products",
     "customers",
@@ -29,6 +33,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -57,6 +62,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+_db_options = config("DB_OPTIONS", default=None)
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -65,11 +72,11 @@ DATABASES = {
         "PASSWORD": config("DB_PASSWORD"),
         "HOST": config("DB_HOST"),
         "PORT": config("DB_PORT"),
-        "OPTIONS": {
-            "options": config("DB_OPTIONS", default="-c search_path=inventory_app"),
-        },
     }
 }
+
+if _db_options:
+    DATABASES["default"]["OPTIONS"] = {"options": _db_options}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -93,6 +100,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
